@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Daily Bible Verse</title>
+  <title>Daily Quote</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -55,35 +55,35 @@
 <body>
   <div class="box">
     <h2>Today's Encouragement</h2>
-    <p id="verse">Loading...</p>
-    <div class="ref" id="reference"></div>
+    <p id="quote">Loading...</p>
+    <div class="ref" id="author"></div>
     <div class="error" id="error"></div>
   </div>
 
   <script>
-    async function loadVerse() {
-      const verseEl = document.getElementById("verse");
-      const refEl   = document.getElementById("reference");
-      const errEl   = document.getElementById("error");
+    async function loadQuote() {
+      const quoteEl = document.getElementById("quote");
+      const authorEl = document.getElementById("author");
+      const errEl = document.getElementById("error");
 
       try {
-        const url = "https://beta.ourmanna.com/api/v1/get/?format=json&order=random&t=" + Date.now();
-        const res = await fetch(url);
-        const json = await res.json();
-        const det = json.verse.details;
+        const res = await fetch("quotes.json");
+        if (!res.ok) throw new Error("File not found");
+        
+        const quotes = await res.json();
+        const randomIndex = Math.floor(Math.random() * quotes.length);
+        const q = quotes[randomIndex];
 
-        verseEl.textContent = det.text;
-        refEl.textContent   = det.reference;
+        quoteEl.textContent = q.quote;
+        authorEl.textContent = "— " + q.author;
       } catch (e) {
-        verseEl.textContent = "⚠️ Unable to load verse.";
-        refEl.textContent = "";
-        errEl.textContent = "Please check your internet connection and try again.";
+        quoteEl.textContent = "⚠️ Unable to load quotes.";
+        authorEl.textContent = "";
+        errEl.textContent = "Make sure quotes.json is in the same folder as index.html.";
       }
     }
 
-    loadVerse();
+    loadQuote();
   </script>
 </body>
 </html>
-
-
